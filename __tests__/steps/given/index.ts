@@ -1,0 +1,6 @@
+export { default as authenticatedOwner } from './authenticatedOwner'
+export { default as authenticatedUser } from './authenticatedUser'
+export { default as nonExistantName } from './nonExistantName'
+export { default as randomCategory } from './randomCategory'
+export { default as randomPost } from './randomPost'
+export { default as randomUser } from './randomUser'

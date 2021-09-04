@@ -1,0 +1,14 @@
+{
+    "name": "api-call",
+    "version": "0.1.0",
+    "main": "index.js",
+    "dependencies": {
+        "aws-sdk": "2.825.0",
+        "aws-lambda": "1.0.6",
+        "jsonwebtoken": "^8.5.1",
+        "kafkajs": "1.15.0",
+        "services": "file:../services",
+        "config": "file:../config",
+        "appSyncApi": "file:../appSyncApi"
+    }
+}

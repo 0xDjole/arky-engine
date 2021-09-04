@@ -1,0 +1,2 @@
+docker exec -it cassandra bin/bash -c "cqlsh -f /schema.cql"
+npm run seed-init

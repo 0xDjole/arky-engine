@@ -1,0 +1,5 @@
+export { default as elasticSearchCategoriesGet } from './elasticSearchCategoriesGet'
+export { default as elasticSearchCategoryDelete } from './elasticSearchCategoryDelete'
+export { default as elasticSearchCategoryPermissionCreate } from './elasticSearchCategoryPermissionCreate'
+export { default as elasticSearchCategoryPermissionDelete } from './elasticSearchCategoryPermissionDelete'
+export { default as elasticSearchCategoryUpsert } from './elasticSearchCategoryUpsert'

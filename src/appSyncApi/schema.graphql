@@ -1,0 +1,213 @@
+type User {
+    id: String!
+    email: String!
+    name: String
+    image: String
+    createdAt: AWSDateTime!
+}
+
+type UserOAuth2TokenData {
+    provider: String!
+    openIdToken: String!
+    accessToken: String!
+    refreshToken: String!
+    tokenType: String!
+    expiresAt: AWSDateTime!
+    scope: String!
+}
+
+type Post {
+    id: String!
+    name: String!
+    image: AWSURL
+    categories: [Category]
+    location: Location!
+    createdAt: AWSDateTime!
+    address: String
+    city: String
+    country: String
+}
+
+type Category {
+    id: String!
+    name: String!
+    image: String
+    createdAt: AWSDateTime!
+}
+
+# type CategoryPage
+#      {
+#     items: [Category]
+#     nextToken: String
+# }
+
+# type PostPage {
+#     items: [Post]
+#     nextToken: String
+# }
+
+type Location {
+    longitude: Float!
+    latitude: Float!
+}
+
+input LocationInput {
+    longitude: Float!
+    latitude: Float!
+}
+
+input userGetInput {
+    id: String!
+}
+
+input categoryGetInput {
+    id: String!
+}
+
+input LocationNotRequiredInput {
+    longitude: Float
+    latitude: Float
+}
+
+input postKeyDataInput {
+    id: String!
+}
+
+input categoryKeyDataInput {
+    id: String!
+}
+
+input categoryCreateInput {
+    name: String!
+    image: AWSURL!
+}
+
+input postCreateInput {
+    name: String!
+    image: AWSURL!
+    location: LocationInput!
+    categoryIds: [String]!
+}
+
+input categoryDeleteInput {
+    id: String
+}
+
+input postDeleteInput {
+    id: String!
+}
+
+input userDeleteInput {
+    id: String
+}
+
+input categoriesGetFilteredInput {
+    location: LocationNotRequiredInput
+    distance: Int
+    categoryIds: [String]
+}
+
+input postsGetFilteredInput {
+    name: String
+    location: LocationNotRequiredInput
+    distance: Int
+    categoryIds: [String]
+}
+
+input postGetInput {
+    id: String!
+}
+
+input postGetRandomInput {
+    location: LocationNotRequiredInput
+    distance: Int
+    categoryNames: [String]
+    matchAllCategories: Boolean
+}
+
+input updateCategoryData {
+    image: AWSURL!
+}
+
+input categoryUpdateInput {
+    categoryKeyData: categoryKeyDataInput!
+    updateCategoryData: updateCategoryData!
+}
+
+input updatePostData {
+    image: AWSURL!
+    location: LocationInput!
+    categoryIds: [String]!
+}
+
+input postUpdateInput {
+    postKeyData: postKeyDataInput!
+    updatePostData: updatePostData!
+}
+
+input updateUserData {
+    name: String!
+    image: AWSURL!
+}
+
+input userUpdateInput {
+    userKeyData: userGetInput!
+    updateUserData: updateUserData!
+}
+
+input userPermissionAssignInput {
+    email: String
+    permissionIds: String
+}
+
+input userPermissionUnassignInput {
+    email: String
+    permissionIds: String
+}
+
+input userOAuth2LoginUrlGetInput {
+    provider: String!
+}
+
+input userOAuth2LoginInput {
+    code: String!
+    provider: String!
+}
+
+input userOAuth2LogoutInput {
+    token: String!
+    provider: String!
+}
+
+input userOAuth2RefreshAccessTokenInput {
+    refreshToken: String!
+    provider: String!
+}
+
+type Query {
+    userOAuth2LoginUrlGet(payload: userOAuth2LoginUrlGetInput!): String
+    userGetMe: User!
+    userGet(payload: userGetInput!): User!
+    categoryGet(payload: categoryGetInput!): Category!
+    categoriesGetFiltered(payload: categoriesGetFilteredInput): [Category]!
+    postGet(payload: postGetInput!): Post!
+    postsGetFiltered(payload: postsGetFilteredInput): [Post]!
+    postGetRandom(payload: postGetRandomInput!): Post!
+}
+
+type Mutation {
+    userOAuth2Login(payload: userOAuth2LoginInput!): UserOAuth2TokenData!
+    userOAuth2Logout(payload: userOAuth2LogoutInput!): Boolean!
+    userOAuth2RefreshAccessToken(
+        payload: userOAuth2RefreshAccessTokenInput!
+    ): UserOAuth2TokenData!
+    userDelete(payload: userDeleteInput!): User!
+    categoryCreate(payload: categoryCreateInput!): Category!
+    categoryUpdate(payload: categoryUpdateInput!): Category!
+    categoryDelete(payload: categoryDeleteInput!): Category!
+    postCreate(payload: postCreateInput!): Post!
+    postUpdate(payload: postUpdateInput!): Post!
+    postDelete(payload: postDeleteInput!): Post!
+    userPermissionAssign(payload: userPermissionAssignInput!): Boolean!
+    userPermissionUnassign(payload: userPermissionUnassignInput!): Boolean!
+}

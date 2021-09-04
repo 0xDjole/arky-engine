@@ -1,0 +1,89 @@
+import * as when from 'apiCall'
+import {
+    ECoreUserOAuth2Provider,
+    error,
+    EUserTokenType,
+    handleAsync,
+    ICoreCategory,
+    ICoreUser
+} from 'services'
+
+import * as given from '../../steps/given'
+
+describe('Delete Category', () => {
+    const newCategory = given.randomCategory()
+    let createdCategory: ICoreCategory
+    let user: ICoreUser
+
+    beforeAll(async () => {
+        const [
+            refreshAccessTokenError,
+            refreshAccessTokenData
+        ] = await handleAsync(
+            when.weInvokeOAuth2RefreshAccessToken({
+                payload: {
+                    refreshToken: process.env.GOOGLE_REFRESH_ACCESS_TOKEN,
+                    provider: ECoreUserOAuth2Provider.GOOGLE
+                }
+            })
+        )
+
+        if (refreshAccessTokenError) throw error(refreshAccessTokenError)
+
+        user = refreshAccessTokenData
+    })
+
+    afterAll(async () => {
+        const [logoutError] = await handleAsync(
+            when.weInvokeOAuth2Logout({
+                type: EUserTokenType.ACCESS_TOKEN,
+                value: user.token.accessToken,
+                permissionIds: user.permissions.map(
+                    permissionItem => permissionItem.id
+                )
+            })
+        )
+
+        if (logoutError) throw error(logoutError)
+    })
+
+    test('Should create and delete category', async () => {
+        const [createCategoryError, createCategoryData] = await handleAsync(
+            when.weInvokeCreateCategory(
+                {
+                    payload: newCategory
+                },
+                {
+                    authorization: user.token.accessToken
+                }
+            )
+        )
+
+        if (createCategoryError) throw error(createCategoryError)
+
+        createdCategory = createCategoryData
+        user.permissions = [
+            ...new Set([...user.permissions, ...createdCategory.permissions])
+        ]
+
+        const [deleteCategoryError, deleteCategoryData] = await handleAsync(
+            when.weInvokeDeleteCategory(
+                {
+                    payload: {
+                        id: createdCategory.id
+                    }
+                },
+                {
+                    authorization: user.token.accessToken
+                }
+            )
+        )
+
+        if (deleteCategoryError) throw error(deleteCategoryError)
+
+        expect(deleteCategoryData).toMatchObject({
+            name: newCategory.name,
+            image: newCategory.image
+        })
+    })
+})
